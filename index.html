@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eiman Aftab — Biology × Data</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Tokens ─────────────────────────────────────────── */
+    :root {
+      --bg:        #0d1117;
+      --surface:   #131920;
+      --border:    #1e2d3d;
+      --dna-teal:  #00c9a7;
+      --helix-blue:#4f9cf9;
+      --muted:     #5a7a8a;
+      --text:      #cdd9e5;
+      --head:      #e8f0f8;
+      --serif:     'Crimson Pro', Georgia, serif;
+      --mono:      'DM Mono', 'Courier New', monospace;
+      --sans:      'Inter', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ─── Nav ────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 52px;
+      background: rgba(13,17,23,0.88);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--dna-teal);
+      letter-spacing: .04em;
+    }
+    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+    .nav-links a {
+      font-size: 12.5px;
+      font-family: var(--mono);
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: .04em;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--dna-teal); }
+
+    /* ─── Hero ───────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 7rem 2rem 4rem;
+      max-width: 860px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--dna-teal);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 300;
+      color: var(--head);
+      line-height: 1.12;
+      letter-spacing: -.01em;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--dna-teal);
+    }
+    .hero-bio {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 300;
+      color: var(--text);
+      max-width: 580px;
+      line-height: 1.75;
+      margin-bottom: 2.5rem;
+    }
+    .hero-tags {
+      display: flex; flex-wrap: wrap; gap: .6rem;
+      margin-bottom: 2.8rem;
+    }
+    .tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: .3rem .75rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--muted);
+      letter-spacing: .04em;
+    }
+    .tag.accent { border-color: var(--dna-teal); color: var(--dna-teal); }
+    .cta-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: .06em;
+      padding: .65rem 1.4rem;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: background .2s, color .2s;
+    }
+    .btn-primary {
+      background: var(--dna-teal);
+      color: #0d1117;
+      border: 1px solid var(--dna-teal);
+    }
+    .btn-primary:hover { background: #00b396; border-color: #00b396; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--dna-teal); color: var(--dna-teal); }
+
+    /* DNA strand decoration */
+    .dna-strand {
+      position: absolute;
+      right: 0; top: 50%;
+      transform: translateY(-50%);
+      opacity: .06;
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.9;
+      writing-mode: vertical-rl;
+      letter-spacing: .2em;
+      color: var(--dna-teal);
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* ─── Sections ───────────────────────────────────────── */
+    section { border-top: 1px solid var(--border); }
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+    }
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--dna-teal);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ─── About ──────────────────────────────────────────── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .about-text p {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+    .about-text p:last-child { margin-bottom: 0; }
+    .about-stats { display: flex; flex-direction: column; gap: 1.2rem; }
+    .stat-row {
+      display: flex; align-items: baseline; gap: .75rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .stat-num {
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      font-weight: 300;
+      color: var(--dna-teal);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 12.5px;
+      color: var(--muted);
+      font-family: var(--mono);
+      letter-spacing: .04em;
+    }
+
+    /* ─── Experience ─────────────────────────────────────── */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .tl-item {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 2rem;
+      position: relative;
+      padding-bottom: 2.5rem;
+    }
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: 160px;
+      top: 8px; bottom: 0;
+      width: 1px;
+      background: var(--border);
+      transform: translateX(calc(-2rem + .5px));
+    }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-item:last-child::before { display: none; }
+    .tl-date {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: .04em;
+      padding-top: .3rem;
+      text-align: right;
+    }
+    .tl-content { position: relative; padding-left: 1.5rem; }
+    .tl-content::before {
+      content: '';
+      position: absolute;
+      left: calc(-2rem + 7px);
+      top: 8px;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--dna-teal);
+      border: 1px solid var(--bg);
+    }
+    .tl-role {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--head);
+      margin-bottom: .15rem;
+    }
+    .tl-org {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--helix-blue);
+      margin-bottom: .6rem;
+      letter-spacing: .04em;
+    }
+    .tl-desc {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ─── Skills ─────────────────────────────────────────── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1px;
+      border: 1px solid var(--border);
+    }
+    .skill-card {
+      padding: 1.4rem 1.5rem;
+      background: var(--surface);
+      border: 1px solid transparent;
+      transition: border-color .2s, background .2s;
+    }
+    .skill-card:hover { border-color: var(--dna-teal); background: #131f29; }
+    .skill-icon {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--dna-teal);
+      letter-spacing: .08em;
+      margin-bottom: .5rem;
+    }
+    .skill-name {
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: var(--head);
+      font-weight: 400;
+    }
+    .skill-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: .2rem;
+      line-height: 1.5;
+    }
+
+    /* ─── Training / Certifications ──────────────────────── */
+    .cert-list { display: flex; flex-direction: column; gap: 1rem; }
+    .cert-item {
+      display: flex; align-items: flex-start; gap: 1.2rem;
+      padding: 1.1rem 1.3rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      transition: border-color .2s;
+    }
+    .cert-item:hover { border-color: var(--dna-teal); }
+    .cert-bullet {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--dna-teal);
+      margin-top: .45rem;
+      flex-shrink: 0;
+    }
+    .cert-title {
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: var(--head);
+      font-weight: 400;
+    }
+    .cert-org {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: .2rem;
+      letter-spacing: .03em;
+    }
+
+    /* ─── Recommendation ─────────────────────────────────── */
+    .rec-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--dna-teal);
+      padding: 2rem 2.2rem;
+      max-width: 680px;
+    }
+    .rec-text {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.8;
+      margin-bottom: 1.2rem;
+    }
+    .rec-author {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--dna-teal);
+      letter-spacing: .05em;
+    }
+    .rec-role {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: .2rem;
+      letter-spacing: .03em;
+    }
+
+    /* ─── Education ──────────────────────────────────────── */
+    .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .edu-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.5rem 1.6rem;
+      border-radius: 2px;
+      transition: border-color .2s;
+    }
+    .edu-card:hover { border-color: var(--helix-blue); }
+    .edu-degree {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      color: var(--head);
+      font-weight: 600;
+      margin-bottom: .25rem;
+    }
+    .edu-school {
+      font-size: 13px;
+      color: var(--helix-blue);
+      font-family: var(--mono);
+      letter-spacing: .03em;
+    }
+    .edu-years {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: .5rem;
+    }
+
+    /* ─── Footer ─────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+    .footer-inner { max-width: 860px; margin: 0 auto; }
+    .footer-name {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      color: var(--head);
+      margin-bottom: .4rem;
+    }
+    .footer-sub {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: .06em;
+    }
+    .footer-links {
+      display: flex; justify-content: center; gap: 1.5rem;
+      margin-top: 1.2rem;
+    }
+    .footer-links a {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: .05em;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--dna-teal); }
+
+    /* ─── Responsive ─────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .about-grid { grid-template-columns: 1fr; }
+      .edu-grid { grid-template-columns: 1fr; }
+      .tl-item { grid-template-columns: 1fr; }
+      .tl-date { text-align: left; }
+      .tl-item::before { left: 0; }
+      .tl-content::before { left: calc(-1.5rem + 7px); }
+      .dna-strand { display: none; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="nav-logo">eiman.aftab</div>
+    <ul class="nav-links">
+      <li><a href="#about">about</a></li>
+      <li><a href="#experience">experience</a></li>
+      <li><a href="#skills">skills</a></li>
+      <li><a href="#education">education</a></li>
+      <li><a href="#contact">contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero">
+    <p class="hero-eyebrow">BS Biology · IIUI · Rawalpindi, Pakistan</p>
+    <h1>Bridging <em>Biology</em><br>with Data</h1>
+    <p class="hero-bio">
+      Bioinformatics enthusiast building at the intersection of life sciences and computation.
+      From wet-lab tissue culture to molecular docking pipelines — I care about research that is
+      both rigorous and reproducible.
+    </p>
+    <div class="hero-tags">
+      <span class="tag accent">Bioinformatics</span>
+      <span class="tag accent">Plant Biotechnology</span>
+      <span class="tag">Python</span>
+      <span class="tag">Molecular Docking</span>
+      <span class="tag">Genomics</span>
+      <span class="tag">Tissue Culture</span>
+      <span class="tag">Data Management</span>
+    </div>
+    <div class="cta-row">
+      <a href="https://www.linkedin.com/in/eiman-aftab-32ab7339a/" target="_blank" class="btn btn-primary">LinkedIn Profile</a>
+      <a href="#experience" class="btn btn-ghost">View Experience</a>
+    </div>
+    <div class="dna-strand" aria-hidden="true">
+      ATCGATCGATCG<br>GCTAGCTAGCTA<br>ATCGATCGATCG<br>GCTAGCTAGCTA
+    </div>
+  </div>
+
+  <!-- About -->
+  <section id="about">
+    <div class="container">
+      <p class="section-label">About</p>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>
+            I'm a third-year BS Biology student at International Islamic University Islamabad,
+            self-directing my way into bioinformatics alongside my core coursework.
+          </p>
+          <p>
+            My research at NARC gave me hands-on experience in micropropagation, DNA extraction,
+            and germplasm conservation. I've since extended that foundation into computational
+            work — structure-based drug design, sequence analysis, and genomic pipelines.
+          </p>
+          <p>
+            Outside the lab, I serve as Joint Secretary at the HELP Foundation Youth Empowerment
+            Program, where I focus on data governance and organisational systems.
+          </p>
+        </div>
+        <div class="about-stats">
+          <div class="stat-row">
+            <span class="stat-num">3+</span>
+            <span class="stat-label">research internships &amp; roles</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-num">5+</span>
+            <span class="stat-label">workshops &amp; masterclasses completed</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-num">500+</span>
+            <span class="stat-label">LinkedIn connections</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-num">2027</span>
+            <span class="stat-label">expected graduation, IIUI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience -->
+  <section id="experience">
+    <div class="container">
+      <p class="section-label">Experience</p>
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-date">Jun 2026 — Present</div>
+          <div class="tl-content">
+            <div class="tl-role">Joint Secretary</div>
+            <div class="tl-org">HELP Foundation · Youth Empowerment Program · Remote</div>
+            <div class="tl-desc">Leading secretarial and organisational functions for a youth-focused NGO running remote programs across Pakistan.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Jan 2026 — May 2026</div>
+          <div class="tl-content">
+            <div class="tl-role">Data Management Officer</div>
+            <div class="tl-org">HELP Foundation · Youth Empowerment Program · Remote</div>
+            <div class="tl-desc">Responsible for data maintenance and quality control across programme records and reporting systems.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Jan 2026 — Mar 2026</div>
+          <div class="tl-content">
+            <div class="tl-role">Research Intern — Plant Genetic Resources</div>
+            <div class="tl-org">NARC · Plant Genetic Resources Institute (PGRI) · Islamabad, On-site</div>
+            <div class="tl-desc">
+              Conducted in vitro regeneration of potato sprouts via tissue culture (micropropagation under sterile conditions).
+              Performed plant genomic DNA extraction using the CTAB method, germplasm evaluation, and explored gene bank seed
+              preservation systems. Participated in field research including crop characterisation and hand pollination.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills">
+    <div class="container">
+      <p class="section-label">Skills</p>
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="skill-icon">LAB</div>
+          <div class="skill-name">Tissue Culture</div>
+          <div class="skill-sub">Micropropagation, sterile technique, in vitro regeneration</div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">GEN</div>
+          <div class="skill-name">DNA Extraction &amp; Analysis</div>
+          <div class="skill-sub">CTAB method, germplasm evaluation, BLAST, MSA, phylogenetics</div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">BIO</div>
+          <div class="skill-name">Bioinformatics</div>
+          <div class="skill-sub">NCBI, UniProt, Ensembl, sequence alignment, homology modelling</div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">DRUG</div>
+          <div class="skill-name">Molecular Docking</div>
+          <div class="skill-sub">AutoDock Vina, PyRx, ADMET prediction, pharmacophore modelling</div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">CODE</div>
+          <div class="skill-name">Python</div>
+          <div class="skill-sub">Self-directed learning, genomic data analysis scripting</div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">DATA</div>
+          <div class="skill-name">Data Management</div>
+          <div class="skill-sub">Record keeping, quality control, organisational data systems</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Training -->
+  <section>
+    <div class="container">
+      <p class="section-label">Training &amp; Certifications</p>
+      <div class="cert-list">
+        <div class="cert-item">
+          <div class="cert-bullet"></div>
+          <div>
+            <div class="cert-title">Bioinformatics Masterclass</div>
+            <div class="cert-org">BioSkillz × Biotech Squad · 2026 · 1-month intensive</div>
+          </div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-bullet"></div>
+          <div>
+            <div class="cert-title">Structure-Based Drug Design (SBDD) Training</div>
+            <div class="cert-org">BioTech Catalyst · 2026 · Portfolio project completed</div>
+          </div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-bullet"></div>
+          <div>
+            <div class="cert-title">AI-Assisted Drug Discovery Workshop</div>
+            <div class="cert-org">Barcode Biotechnology · Jan 2026 · ADMET &amp; pharmacophore modelling</div>
+          </div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-bullet"></div>
+          <div>
+            <div class="cert-title">NARC Research Internship Certificate</div>
+            <div class="cert-org">National Agricultural Research Centre · Mar 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recommendation -->
+  <section>
+    <div class="container">
+      <p class="section-label">Recommendation</p>
+      <div class="rec-card">
+        <p class="rec-text">
+          "Eiman is a brilliant learner of Bioinformatics and computational biology, with excellent skills
+          to execute a structure-based drug design pipeline — from target identification to molecular
+          docking of multiple compounds, ADMET analysis, and post-interaction analysis.
+          She completed a portfolio project during SBDD training at BioTech Catalyst."
+        </p>
+        <div class="rec-author">Adeeba Fatima</div>
+        <div class="rec-role">Bioinformatics Mentor · Founder, BioTech Catalyst · May 2026</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Education -->
+  <section id="education">
+    <div class="container">
+      <p class="section-label">Education</p>
+      <div class="edu-grid">
+        <div class="edu-card">
+          <div class="edu-degree">BS Biology</div>
+          <div class="edu-school">International Islamic University, Islamabad</div>
+          <div class="edu-years">Sep 2023 – Jun 2027</div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-degree">FSc Pre-Medical</div>
+          <div class="edu-school">Punjab Group of Colleges</div>
+          <div class="edu-years">Aug 2020 – May 2022</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact / Footer -->
+  <footer id="contact">
+    <div class="footer-inner">
+      <div class="footer-name">Eiman Aftab</div>
+      <div class="footer-sub">BIOLOGY × BIOINFORMATICS · RAWALPINDI, PAKISTAN</div>
+      <div class="footer-links">
+        <a href="https://www.linkedin.com/in/eiman-aftab-32ab7339a/" target="_blank">linkedin</a>
+        <a href="mailto:">email</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
